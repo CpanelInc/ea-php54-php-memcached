@@ -6,7 +6,7 @@
 Name: %{scl_version}-php-memcached
 Version: 2.2.0
 Summary: php-memcached extension for %{scl_version}
-%define release_prefix 1
+%define release_prefix 2
 Release: %{release_prefix}%{?dist}.cpanel
 License: MIT
 Group: Programming/Languages
@@ -16,8 +16,9 @@ Source1: memcached.ini
 
 # should be no requires for building this package
 #Requires: memcached
-Requires: libmemcached
-BuildRequires: libmemcached libmemcached-devel
+Requires: ea-libmemcached
+BuildRequires: cyrus-sasl-devel
+BuildRequires: ea-libmemcached ea-libmemcached-devel
 BuildRequires: %{scl_version} %{scl_version}-php-cli
 
 %description
@@ -30,7 +31,7 @@ to memcached servers.
 
 %build
 scl enable %{scl_version} phpize
-scl enable %{scl_version} './configure --disable-memcached-sasl'
+scl enable %{scl_version} './configure --with-libmemcached-dir=/opt/cpanel/libmemcached --with-libdir=lib64'
 make
 
 %install
@@ -46,6 +47,9 @@ install -m 644 %{SOURCE1} %{buildroot}/%{ext_prefix}/%{conf_dir}/
 %config /%{ext_prefix}/%{conf_dir}/memcached.ini
 
 %changelog
+* Thu Jun 13 2019 Tim Mullin <tim@cpanel.net> - 2.2.0-2
+- EA-8224: Built with our ea-libmemcached module
+
 * Wed Mar  5 2017 Jack Hayhurst <jack@deleteos.com> - 2.2.7
 - RPM actually building, fixed naming scheme to fit in with EA4
 
